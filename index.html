@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Baby Doodle Apes | Official Mint</title>
+<title>Baby Doodle Apes | Mint</title>
 <script src="https://cdn.jsdelivr.net/npm/ethers@6.8.1/dist/ethers.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
 
@@ -11,413 +11,261 @@
     :root {
         --doodle-pink: #ffc2d4;
         --doodle-blue: #bde0fe;
-        --doodle-yellow: #ffeaae;
-        --doodle-mint: #caffbf;
         --text-dark: #2d3436;
-        --glass-bg: rgba(255, 255, 255, 0.85);
-        --border-white: 6px solid #ffffff;
+        --glass: rgba(255, 255, 255, 0.9);
     }
 
     body {
-        margin: 0;
-        font-family: 'Nunito', sans-serif;
-        color: var(--text-dark);
+        margin: 0; font-family: 'Nunito', sans-serif; color: var(--text-dark);
         background: linear-gradient(45deg, #ffc2d4, #bde0fe, #ffeaae, #caffbf);
-        background-size: 400% 400%;
-        animation: meshGradient 15s ease infinite;
-        overflow-x: hidden;
-        min-height: 100vh;
+        background-size: 400% 400%; animation: mesh 15s ease infinite;
+        min-height: 100vh; overflow-x: hidden;
     }
 
-    @keyframes meshGradient {
-        0% { background-position: 0% 50%; }
-        50% { background-position: 100% 50%; }
-        100% { background-position: 0% 50%; }
-    }
+    @keyframes mesh { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
 
-    /* Professional Floating Bubbles */
     .bubble {
-        position: fixed;
-        bottom: -100px;
-        background: rgba(255, 255, 255, 0.4);
-        border-radius: 50%;
-        z-index: -1;
-        animation: floatUp linear infinite;
-        filter: blur(2px);
+        position: fixed; bottom: -100px; background: rgba(255, 255, 255, 0.4);
+        border-radius: 50%; z-index: -1; animation: floatUp linear infinite;
     }
-
-    @keyframes floatUp {
-        to { transform: translateY(-120vh) rotate(360deg); opacity: 0; }
-    }
+    @keyframes floatUp { to { transform: translateY(-120vh); opacity: 0; } }
 
     .navbar {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 25px 5%;
-        backdrop-filter: blur(12px);
-        border-bottom: 2px solid rgba(255,255,255,0.3);
+        display: flex; justify-content: space-between; align-items: center;
+        padding: 20px 5%; backdrop-filter: blur(10px); background: rgba(255,255,255,0.2);
     }
 
-    .brand {
-        font-family: 'Fredoka', sans-serif;
-        font-size: 32px;
-        font-weight: 700;
-        color: #ff74a4;
-        text-shadow: 3px 3px 0px #fff;
-        letter-spacing: -1px;
-    }
+    .brand { font-family: 'Fredoka'; font-size: 30px; font-weight: 700; color: #ff74a4; text-shadow: 2px 2px 0 white; }
 
-    .container {
-        max-width: 1200px;
-        margin: 40px auto;
-        padding: 0 20px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 30px;
-    }
+    .container { max-width: 600px; margin: 40px auto; padding: 0 20px; }
 
     .mint-card {
-        background: var(--glass-bg);
-        border-radius: 40px;
-        padding: 50px;
-        width: 100%;
-        max-width: 500px;
-        border: var(--border-white);
-        box-shadow: 0 20px 50px rgba(0,0,0,0.08);
-        text-align: center;
-        position: relative;
-        animation: cardFloat 4s ease-in-out infinite;
-    }
-
-    @keyframes cardFloat {
-        0%, 100% { transform: translateY(0); }
-        50% { transform: translateY(-10px); }
+        background: var(--glass); border-radius: 40px; padding: 40px;
+        border: 6px solid #fff; box-shadow: 0 20px 40px rgba(0,0,0,0.05);
+        text-align: center; position: relative;
     }
 
     .badge {
-        position: absolute;
-        top: -15px;
-        right: 20px;
-        background: #ff7494;
-        color: white;
-        padding: 8px 20px;
-        border-radius: 50px;
-        font-family: 'Fredoka';
-        font-weight: 700;
-        box-shadow: 0 5px 15px rgba(255,116,148,0.4);
-        transform: rotate(5deg);
+        position: absolute; top: -15px; right: 20px; background: #ff7494;
+        color: white; padding: 8px 18px; border-radius: 50px; font-weight: 800;
+        transform: rotate(5deg); font-family: 'Fredoka';
     }
 
-    .progress-container {
-        margin: 25px 0;
-        background: #f0f0f0;
-        border-radius: 20px;
-        height: 25px;
-        overflow: hidden;
-        border: 3px solid #fff;
-    }
+    .progress-bg { background: #eee; height: 20px; border-radius: 10px; margin: 20px 0; overflow: hidden; border: 2px solid #fff; }
+    .progress-bar { height: 100%; width: 0%; background: #ff74a4; transition: 1s; }
 
-    .progress-bar {
-        height: 100%;
-        width: 0%;
-        background: linear-gradient(90deg, #ff74a4, #ff9eb5);
-        transition: width 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    }
-
-    .stats-row {
-        display: flex;
-        justify-content: space-between;
-        margin-bottom: 30px;
-        background: rgba(255,255,255,0.5);
-        padding: 15px;
-        border-radius: 25px;
-    }
-
-    .stat-item span { display: block; font-weight: 800; font-size: 18px; color: #ff74a4; }
-    .stat-item label { font-size: 12px; text-transform: uppercase; color: #636e72; font-weight: 700; }
-
-    .qty-box {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 15px;
-        margin-bottom: 20px;
-    }
-
-    .qty-btn {
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-        border: none;
-        background: #fff;
-        font-size: 24px;
-        font-weight: bold;
-        cursor: pointer;
-        box-shadow: 0 4px 0 #dfe6e9;
-        transition: 0.1s;
-    }
-
-    .qty-btn:active { transform: translateY(3px); box-shadow: none; }
-
-    #amountInput {
-        width: 100px;
-        font-size: 32px;
-        font-family: 'Fredoka';
-        border: none;
-        background: transparent;
-        text-align: center;
-        outline: none;
-        font-weight: 700;
-    }
+    .qty-ctrl { display: flex; align-items: center; justify-content: center; gap: 20px; margin: 20px 0; }
+    .qty-btn { width: 50px; height: 50px; border-radius: 50%; border: none; background: #fff; font-size: 24px; cursor: pointer; box-shadow: 0 4px 0 #ddd; }
+    .qty-btn:active { transform: translateY(2px); box-shadow: none; }
+    
+    #amountInput { width: 80px; font-size: 30px; font-family: 'Fredoka'; border: none; background: transparent; text-align: center; font-weight: 700; outline: none; }
 
     .main-btn {
-        width: 100%;
-        padding: 18px;
-        border-radius: 50px;
-        border: none;
-        font-family: 'Fredoka';
-        font-size: 22px;
-        font-weight: 700;
-        cursor: pointer;
-        transition: 0.3s;
-        margin-bottom: 15px;
-        box-shadow: 0 6px 0 rgba(0,0,0,0.1);
+        width: 100%; padding: 16px; border-radius: 50px; border: none;
+        font-family: 'Fredoka'; font-size: 20px; font-weight: 700; cursor: pointer;
+        transition: 0.2s; margin-top: 10px; box-shadow: 0 5px 0 rgba(0,0,0,0.1);
     }
+    .btn-blue { background: #bde0fe; color: #2d3436; }
+    .btn-pink { background: #ffc2d4; color: #2d3436; }
+    
+    .price-display { background: #fff; padding: 15px; border-radius: 20px; border: 3px dashed #ffc2d4; margin: 20px 0; font-family: 'Fredoka'; }
 
-    .btn-mint { background: #bde0fe; color: #2d3436; }
-    .btn-mint:hover { background: #a2d2ff; }
-    .btn-free { background: #ffc2d4; color: #2d3436; }
-    .btn-free:hover { background: #ffafcc; }
-    .btn-os { background: #2081e2; color: white; margin-top: 10px; font-size: 16px; }
-
-    .price-box {
-        background: #fff;
-        padding: 15px;
-        border-radius: 20px;
-        border: 3px dashed #ffc2d4;
-        margin-bottom: 20px;
-        font-family: 'Fredoka';
-        font-weight: 700;
-    }
-
-    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; margin-top: 20px; }
-    .nft-thumb { background: white; padding: 10px; border-radius: 15px; border: 3px solid #f1f5f9; text-align: center; font-weight: 800; }
-
-    input.agent-input {
-        width: 100%; padding: 12px; margin: 5px 0; border-radius: 15px; border: 2px solid #eee; font-family: inherit;
-    }
+    .agent-box { background: var(--glass); border-radius: 30px; padding: 30px; margin-top: 30px; border: 4px solid #fff; }
+    input.agent-input { width: 100%; padding: 12px; margin: 5px 0; border-radius: 12px; border: 2px solid #eee; font-family: inherit; box-sizing: border-box; }
 </style>
 </head>
-
 <body>
 
-<div id="bubbles-bg"></div>
+<div id="bubbles-container"></div>
 
 <nav class="navbar">
     <div class="brand">Baby Doodle Apes</div>
-    <div style="text-align: right">
-        <span id="walletAddr" style="font-weight: 800; font-size: 13px; color: #636e72;">Not Connected</span><br>
-        <button id="connectBtn" class="main-btn" style="padding: 8px 20px; font-size: 14px; margin: 0; background: white;">Connect Wallet</button>
-    </div>
+    <button id="connectBtn" class="main-btn" style="width: auto; margin: 0; font-size: 14px; padding: 10px 20px; background: white;">Connect Wallet</button>
 </nav>
 
 <div class="container">
     <div class="mint-card">
-        <div class="badge" id="freeBadge">1st MINT FREE!</div>
-        <h2 style="font-family: 'Fredoka'; margin-top: 0;">Limited Mint Sale</h2>
-        
-        <div class="progress-container">
-            <div class="progress-bar" id="progressBar"></div>
-        </div>
-        <p style="font-size: 13px; font-weight: 800; margin-top: -15px;">
-            <span id="mintedCount">-</span> / 3332 Minted
-        </p>
+        <div class="badge" id="promoBadge">1st MINT FREE</div>
+        <h2 style="font-family: 'Fredoka'; margin-bottom: 5px;">Public Mint</h2>
+        <p id="walletAddr" style="font-size: 12px; color: #636e72; margin-bottom: 20px;">Please connect your wallet</p>
 
-        <div class="stats-row">
-            <div class="stat-item">
-                <label>Price</label>
-                <span id="unitPrice">0.00011</span>
-            </div>
-            <div class="stat-item">
-                <label>Remaining</label>
-                <span id="remainingCount">-</span>
-            </div>
-            <div class="stat-item">
-                <label>Free Left</label>
-                <span id="freeLeft" style="color: #ff7494;">-</span>
-            </div>
-        </div>
+        <div class="progress-bg"><div class="progress-bar" id="pBar"></div></div>
+        <p style="font-weight: 800; font-size: 14px;"><span id="mCount">0</span> / 3332 Minted</p>
 
-        <div class="qty-box">
+        <div class="qty-ctrl">
             <button class="qty-btn" id="minus">-</button>
             <input type="number" id="amountInput" value="1" min="1" max="200">
             <button class="qty-btn" id="plus">+</button>
         </div>
-        <button id="maxBtn" class="main-btn" style="padding: 5px 15px; font-size: 12px; width: auto; background: #fff; margin-bottom: 20px;">MAX (200)</button>
+        <button id="maxBtn" style="background: none; border: none; text-decoration: underline; cursor: pointer; font-weight: 800; font-size: 12px;">SET MAX (200)</button>
 
-        <div class="price-box">
-            Total Price: <span id="totalCost" style="color: #ff74a4;">0.00</span> ETH
-            <div id="freeNote" style="font-size: 10px; color: #00b894; margin-top: 5px;">*Your first ape is on us!</div>
+        <div class="price-display">
+            Total Price: <span id="totalEth" style="color: #ff74a4; font-size: 22px;">0.00</span> ETH
+            <div id="freeInfo" style="font-size: 11px; color: #00b894; margin-top: 5px; display: none;">Your first mint is free! 🎁</div>
         </div>
 
-        <button class="main-btn btn-mint" id="publicMintBtn">MINT APES</button>
-        <button class="main-btn btn-free" id="freeMintBtn">CLAIM 1 FREE</button>
-        
-        <p id="status" style="font-weight: 800; font-size: 14px; min-height: 20px;"></p>
-
-        <button class="main-btn btn-os" onclick="window.open('https://opensea.io/collection/baby-doodle-apes', '_blank')">VIEW ON OPENSEA</button>
+        <button class="main-btn btn-blue" id="mintBtn">MINT NOW</button>
+        <p id="statusMsg" style="font-size: 13px; font-weight: 700; margin-top: 15px; color: #ff74a4;"></p>
     </div>
 
-    <div style="display: flex; gap: 20px; width: 100%; max-width: 1000px; flex-wrap: wrap; justify-content: center;">
-        <div class="mint-card" style="flex: 1; min-width: 300px; animation: none;">
-            <h3 style="font-family: 'Fredoka';">My Collection</h3>
-            <div class="grid" id="nftGrid"></div>
-        </div>
-
-        <div class="mint-card" style="flex: 1; min-width: 300px; animation: none;">
-            <h3 style="font-family: 'Fredoka';">Agent Identity</h3>
-            <input class="agent-input" id="tid" placeholder="Token ID">
-            <input class="agent-input" id="ep" placeholder="Endpoint">
-            <input class="agent-input" id="md" placeholder="Model">
-            <input class="agent-input" id="cap" placeholder="Capabilities">
-            <button class="main-btn btn-free" id="updateAgentBtn" style="margin-top: 15px;">Update Identity</button>
-        </div>
+    <div class="agent-box">
+        <h3 style="font-family: 'Fredoka'; margin-top: 0;">Agent Identity</h3>
+        <input class="agent-input" id="inpId" placeholder="Token ID">
+        <input class="agent-input" id="inpEp" placeholder="Endpoint">
+        <input class="agent-input" id="inpMd" placeholder="Model">
+        <input class="agent-input" id="inpCap" placeholder="Capabilities">
+        <button class="main-btn btn-pink" id="agentBtn">Update Identity</button>
     </div>
 </div>
 
 <script>
-// Doodle Bubbles Generator
-function createBubbles() {
-    const container = document.getElementById('bubbles-bg');
-    for(let i=0; i<20; i++) {
-        const b = document.createElement('div');
-        b.className = 'bubble';
-        const size = Math.random() * 60 + 20 + 'px';
-        b.style.width = size;
-        b.style.height = size;
-        b.style.left = Math.random() * 100 + 'vw';
-        b.style.animationDuration = Math.random() * 8 + 6 + 's';
-        b.style.animationDelay = Math.random() * 5 + 's';
-        container.appendChild(b);
-    }
+// UI: Bubbles
+const bContainer = document.getElementById('bubbles-container');
+for(let i=0; i<15; i++) {
+    const b = document.createElement('div');
+    b.className = 'bubble';
+    const s = Math.random() * 50 + 20 + 'px';
+    b.style.width = s; b.style.height = s;
+    b.style.left = Math.random() * 100 + 'vw';
+    b.style.animationDuration = Math.random() * 10 + 5 + 's';
+    b.style.animationDelay = Math.random() * 5 + 's';
+    bContainer.appendChild(b);
 }
-createBubbles();
 
-// Blockchain Logic
-const contractAddress = "0x53f8b95687c5a4be9089dd63165d0df59f323911";
-const MINT_PRICE = 0.00011;
-const abi = [
+// Logic Variables
+const CONTRACT_ADDR = "0x53f8b95687c5a4be9089dd63165d0df59f323911";
+const PRICE = 0.00011;
+const ABI = [
     "function publicMint(uint256) payable",
-    "function freeMint(uint256)",
-    "function publicPrice() view returns (uint256)",
     "function totalSupply() view returns (uint256)",
     "function balanceOf(address) view returns (uint256)",
-    "function tokenOfOwnerByIndex(address,uint256) view returns (uint256)"
+    "function setAgentIdentity(uint256,string,string,string)"
 ];
 
-let provider, signer, contract, user, userBalance = 0;
+let provider, signer, contract, userAddress, userNFTBalance = 0;
 
-async function checkNetwork() {
-    const net = await provider.getNetwork();
-    if (net.chainId !== 1n) {
-        try {
-            await window.ethereum.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: '0x1' }] });
-        } catch (e) { alert("Please switch to Ethereum Mainnet"); }
-    }
-}
-
-async function connect() {
-    if(!window.ethereum) return alert("Install MetaMask");
-    provider = new ethers.BrowserProvider(window.ethereum);
-    await checkNetwork();
-    await provider.send("eth_requestAccounts", []);
-    signer = await provider.getSigner();
-    user = await signer.getAddress();
-    contract = new ethers.Contract(contractAddress, abi, signer);
-
-    document.getElementById("walletAddr").innerText = user.slice(0,6)+"..."+user.slice(-4);
-    document.getElementById("connectBtn").innerText = "Wallet Connected";
-    
-    await refreshData();
-}
-
-async function refreshData() {
-    const supply = await contract.totalSupply();
-    const curr = Number(supply);
-    const max = 3332;
-    
-    document.getElementById("mintedCount").innerText = curr;
-    document.getElementById("remainingCount").innerText = max - curr;
-    document.getElementById("freeLeft").innerText = curr < 2000 ? 2000 - curr : 0;
-    
-    const progress = (curr / max) * 100;
-    document.getElementById("progressBar").style.width = progress + "%";
-
-    if(user) {
-        userBalance = Number(await contract.balanceOf(user));
-        loadNFTs();
-    }
-    updatePrice();
-}
-
-function updatePrice() {
+// Update UI Price
+function updateUIPrice() {
     const qty = parseInt(document.getElementById("amountInput").value) || 1;
-    let total = 0;
-    
-    // Logic: If user has 0 NFTs, first is free.
-    if(userBalance === 0 && qty > 0) {
-        total = (qty - 1) * MINT_PRICE;
-        document.getElementById("freeNote").style.display = "block";
-        document.getElementById("freeBadge").innerText = "ELIGIBLE FOR FREE!";
+    let finalTotal = 0;
+
+    if(userAddress && userNFTBalance === 0) {
+        finalTotal = (qty - 1) * PRICE;
+        document.getElementById("freeInfo").style.display = "block";
+        document.getElementById("promoBadge").innerText = "FREE MINT ELIGIBLE";
     } else {
-        total = qty * MINT_PRICE;
-        document.getElementById("freeNote").style.display = "none";
-        document.getElementById("freeBadge").innerText = "MINT ACTIVE";
+        finalTotal = qty * PRICE;
+        document.getElementById("freeInfo").style.display = userAddress ? "none" : "none";
+        document.getElementById("promoBadge").innerText = "MINT ACTIVE";
     }
-    
-    document.getElementById("totalCost").innerText = total.toFixed(5);
+    if(finalTotal < 0) finalTotal = 0;
+    document.getElementById("totalEth").innerText = finalTotal.toFixed(5);
 }
 
-async function loadNFTs() {
-    const grid = document.getElementById("nftGrid");
-    grid.innerHTML = "";
-    for(let i=0; i<userBalance; i++) {
-        const tid = await contract.tokenOfOwnerByIndex(user, i);
-        grid.innerHTML += `<div class="nft-thumb">#${tid}</div>`;
-    }
-}
-
-async function mint() {
+// Data Fetching
+async function syncData() {
     try {
-        const qty = parseInt(document.getElementById("amountInput").value);
-        let val = (userBalance === 0) ? (qty - 1) * MINT_PRICE : qty * MINT_PRICE;
-        if(val < 0) val = 0;
+        const supply = await contract.totalSupply();
+        const current = Number(supply);
+        document.getElementById("mCount").innerText = current;
+        document.getElementById("pBar").style.width = (current / 3332 * 100) + "%";
+
+        if(userAddress) {
+            const bal = await contract.balanceOf(userAddress);
+            userNFTBalance = Number(bal);
+        }
+        updateUIPrice();
+    } catch(e) { console.error("Sync Error:", e); }
+}
+
+// Connect Wallet
+async function connect() {
+    console.log("Connecting...");
+    if (!window.ethereum) return alert("MetaMask not found!");
+
+    try {
+        provider = new ethers.BrowserProvider(window.ethereum);
         
-        const tx = await contract.publicMint(qty, { value: ethers.parseEther(val.toFixed(5)) });
-        document.getElementById("status").innerText = "Confirming on-chain...";
-        await tx.wait();
-        document.getElementById("status").innerText = "Mint Successful! 🍌";
-        refreshData();
-    } catch(e) { document.getElementById("status").innerText = "Mint failed or cancelled."; }
+        // Force network switch to Ethereum Mainnet
+        const network = await provider.getNetwork();
+        if (network.chainId !== 1n) {
+            await window.ethereum.request({
+                method: 'wallet_switchEthereumChain',
+                params: [{ chainId: '0x1' }],
+            });
+            provider = new ethers.BrowserProvider(window.ethereum);
+        }
+
+        const accounts = await provider.send("eth_requestAccounts", []);
+        signer = await provider.getSigner();
+        userAddress = accounts[0];
+        contract = new ethers.Contract(CONTRACT_ADDR, ABI, signer);
+
+        document.getElementById("walletAddr").innerText = "Connected: " + userAddress.slice(0,6) + "..." + userAddress.slice(-4);
+        document.getElementById("connectBtn").innerText = "Connected ✓";
+        
+        await syncData();
+    } catch (err) {
+        console.error("Connection failed", err);
+        alert("Connection failed. Please check MetaMask.");
+    }
 }
 
-// Event Listeners
-document.getElementById("connectBtn").onclick = connect;
-document.getElementById("publicMintBtn").onclick = mint;
-document.getElementById("freeMintBtn").onclick = async () => {
+// Mint Function
+async function startMint() {
+    if(!contract) return alert("Connect wallet first!");
+    const qty = parseInt(document.getElementById("amountInput").value);
+    const status = document.getElementById("statusMsg");
+
     try {
-        const tx = await contract.freeMint(1);
-        await tx.wait(); refreshData();
-    } catch(e) { alert("Not eligible for free mint."); }
-};
+        let cost = (userNFTBalance === 0) ? (qty - 1) * PRICE : qty * PRICE;
+        if(cost < 0) cost = 0;
 
-document.getElementById("plus").onclick = () => { document.getElementById("amountInput").value++; updatePrice(); };
-document.getElementById("minus").onclick = () => { if(document.getElementById("amountInput").value > 1) document.getElementById("amountInput").value--; updatePrice(); };
-document.getElementById("maxBtn").onclick = () => { document.getElementById("amountInput").value = 200; updatePrice(); };
-document.getElementById("amountInput").oninput = updatePrice;
+        status.innerText = "Confirm transaction in wallet...";
+        const tx = await contract.publicMint(qty, { 
+            value: ethers.parseEther(cost.toFixed(5).toString()) 
+        });
+        
+        status.innerText = "Minting in progress...";
+        await tx.wait();
+        status.innerText = "Success! Baby Doodle Apes minted! 🍼";
+        syncData();
+    } catch (e) {
+        status.innerText = "Transaction failed or rejected.";
+        console.error(e);
+    }
+}
 
+// Initial Events
+document.addEventListener("DOMContentLoaded", () => {
+    document.getElementById("connectBtn").onclick = connect;
+    document.getElementById("mintBtn").onclick = startMint;
+    
+    document.getElementById("plus").onclick = () => { document.getElementById("amountInput").value++; updateUIPrice(); };
+    document.getElementById("minus").onclick = () => { 
+        if(document.getElementById("amountInput").value > 1) {
+            document.getElementById("amountInput").value--; 
+            updateUIPrice();
+        }
+    };
+    document.getElementById("maxBtn").onclick = () => { document.getElementById("amountInput").value = 200; updateUIPrice(); };
+    document.getElementById("amountInput").oninput = updateUIPrice;
+
+    // Agent Update
+    document.getElementById("agentBtn").onclick = async () => {
+        if(!contract) return;
+        try {
+            const tx = await contract.setAgentIdentity(
+                document.getElementById("inpId").value,
+                document.getElementById("inpEp").value,
+                document.getElementById("inpMd").value,
+                document.getElementById("inpCap").value
+            );
+            await tx.wait();
+            alert("Agent Updated!");
+        } catch(e) { alert("Error updating agent."); }
+    };
+});
 </script>
 </body>
 </html>
