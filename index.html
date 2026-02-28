@@ -197,6 +197,7 @@ for (let i = 0; i < 15; i++) {
     container.appendChild(b);
 }
 
+// Constants
 const contractAddress = "0x53f8b95687c5a4be9089dd63165d0df59f323911";
 const ETH_CHAIN_ID = "0x1"; // Ethereum Mainnet
 const MINT_PRICE = 0.00011;
@@ -215,43 +216,54 @@ const abi = [
 let provider, signer, contract, user;
 let userBalanceNFT = 0;
 
+// Switch to Ethereum Mainnet
 async function switchNetwork() {
     try {
         await window.ethereum.request({
             method: 'wallet_switchEthereumChain',
             params: [{ chainId: ETH_CHAIN_ID }],
         });
-    } catch (switchError) {
-        console.error("Network switch failed");
+    } catch (err) {
+        if (err.code === 4902) alert("Ethereum Mainnet is not added to your wallet.");
+        else alert("Network switch failed: " + err.message);
     }
 }
 
+// Connect Wallet
 async function connect(){
-    if(!window.ethereum) return alert("Install MetaMask");
-    
-    provider = new ethers.BrowserProvider(window.ethereum);
-    const network = await provider.getNetwork();
-    
-    // Check if on Ethereum Mainnet (Chain ID 1)
-    if (network.chainId !== 1n) {
-        await switchNetwork();
-        // Refresh provider after switch
-        provider = new ethers.BrowserProvider(window.ethereum);
+    if(!window.ethereum) return alert("Install MetaMask!");
+
+    provider = new ethers.BrowserProvider(window.ethereum, "any");
+
+    try {
+        await provider.send("eth_requestAccounts", []);
+    } catch(e) {
+        alert("Wallet connection rejected.");
+        return;
     }
 
-    await provider.send("eth_requestAccounts",[]);
     signer = await provider.getSigner();
-    user = await signer.getAddress();
-    contract = new ethers.Contract(contractAddress, abi, signer);
 
-    document.getElementById("wallet").innerText = user.substring(0,6)+"..."+user.substring(38);
+    try {
+        user = await signer.getAddress();
+    } catch(e) {
+        alert("Unable to get wallet address: " + e.message);
+        return;
+    }
+
+    const network = await provider.getNetwork();
+    if(network.chainId !== 1n) await switchNetwork();
+
+    contract = new ethers.Contract(contractAddress, abi, signer);
+    document.getElementById("wallet").innerText = user.slice(0,6) + "..." + user.slice(-4);
     document.getElementById("connectBtn").innerText = "Connected";
-    
+
     await loadData();
     await loadNFTs();
     updateTotal();
 }
 
+// Load Supply and Free Mint
 async function loadData(){
     try {
         const supply = await contract.totalSupply();
@@ -259,7 +271,7 @@ async function loadData(){
         document.getElementById("remaining").innerText = 3332 - current;
         const freeLeft = current < 2000 ? 2000 - current : 0;
         document.getElementById("freeRemaining").innerText = freeLeft;
-        
+
         if(user) {
             const bal = await contract.balanceOf(user);
             userBalanceNFT = Number(bal);
@@ -267,33 +279,29 @@ async function loadData(){
     } catch(e) { console.error(e); }
 }
 
+// Update total cost
 function updateTotal() {
     const amountInput = document.getElementById("amountInput");
     let amount = parseInt(amountInput.value) || 0;
-    
-    // Safety check for negative or zero
-    if (amount < 1) amount = 1;
+    if(amount < 1) amount = 1;
 
-    let priceToPay = 0;
-    if (userBalanceNFT === 0) {
-        priceToPay = (amount - 1) * MINT_PRICE;
-        document.getElementById("freeNote").style.display = "block";
-    } else {
-        priceToPay = amount * MINT_PRICE;
-        document.getElementById("freeNote").style.display = "none";
-    }
-    
+    let priceToPay = (userBalanceNFT === 0) ? (amount - 1) * MINT_PRICE : amount * MINT_PRICE;
     if(priceToPay < 0) priceToPay = 0;
+
     document.getElementById("totalCostDisplay").innerText = priceToPay.toFixed(5);
+    document.getElementById("freeNote").style.display = (userBalanceNFT === 0) ? "block" : "none";
 }
 
+// Load NFTs of connected wallet
 async function loadNFTs(){
     const grid = document.getElementById("nftGrid");
     grid.innerHTML = "";
     if(!user) return;
+
     const balance = await contract.balanceOf(user);
     userBalanceNFT = Number(balance);
-    if(userBalanceNFT == 0) grid.innerHTML = "<p>No NFTs found</p>";
+    if(userBalanceNFT == 0) { grid.innerHTML = "<p>No NFTs found</p>"; return; }
+
     for(let i=0; i<userBalanceNFT; i++){
         try {
             const tid = await contract.tokenOfOwnerByIndex(user, i);
@@ -301,10 +309,11 @@ async function loadNFTs(){
             div.className = "nft";
             div.innerHTML = `<strong>#${tid}</strong>`;
             grid.appendChild(div);
-        } catch(e) {}
+        } catch(e) { console.error(e); }
     }
 }
 
+// Public Mint
 async function publicMint(){
     try {
         const amount = parseInt(document.getElementById("amountInput").value);
@@ -315,26 +324,25 @@ async function publicMint(){
 
         const valueToSend = ethers.parseEther(finalPrice.toFixed(5).toString());
         const tx = await contract.publicMint(amount, {value: valueToSend});
-        document.getElementById("mintStatus").innerText = "Please confirm...";
+        document.getElementById("mintStatus").innerText = "Please confirm transaction...";
         await tx.wait();
-        document.getElementById("mintStatus").innerText = "Success! 🎉";
+        document.getElementById("mintStatus").innerText = "Mint Success! 🎉";
         await loadData(); await loadNFTs(); updateTotal();
-    } catch(e) { 
-        document.getElementById("mintStatus").innerText = "Transaction failed."; 
-    }
+    } catch(e) { document.getElementById("mintStatus").innerText = "Transaction failed."; console.error(e); }
 }
 
+// Free Mint
 async function freeMint(){
     try {
         const tx = await contract.freeMint(1);
-        document.getElementById("mintStatus").innerText = "Claiming...";
+        document.getElementById("mintStatus").innerText = "Claiming free mint...";
         await tx.wait();
         document.getElementById("mintStatus").innerText = "Free Mint Success! 🎉";
         await loadData(); await loadNFTs(); updateTotal();
-    } catch(e) { document.getElementById("mintStatus").innerText = "Not eligible."; }
+    } catch(e) { document.getElementById("mintStatus").innerText = "Not eligible."; console.error(e); }
 }
 
-// Event Listeners
+// Event listeners
 document.getElementById("amountInput").oninput = updateTotal;
 document.getElementById("connectBtn").onclick = connect;
 document.getElementById("publicMintBtn").onclick = publicMint;
@@ -347,16 +355,14 @@ document.getElementById("plus").onclick = () => {
 }
 document.getElementById("minus").onclick = () => { 
     const input = document.getElementById("amountInput");
-    if(parseInt(input.value) > 1) {
-        input.value = parseInt(input.value) - 1;
-        updateTotal(); 
-    }
+    if(parseInt(input.value) > 1) { input.value = parseInt(input.value) - 1; updateTotal(); }
 }
 document.getElementById("maxBtn").onclick = () => { 
     document.getElementById("amountInput").value = 200; 
     updateTotal(); 
 }
 
+// Agent Settings
 document.getElementById("setAgentBtn").onclick = async () => {
     try {
         const tx = await contract.setAgentIdentity(
@@ -366,8 +372,8 @@ document.getElementById("setAgentBtn").onclick = async () => {
             document.getElementById("capabilitiesInput").value
         );
         await tx.wait();
-        document.getElementById("agentStatus").innerText = "Updated! 🤖";
-    } catch(e) { document.getElementById("agentStatus").innerText = "Update Error"; }
+        document.getElementById("agentStatus").innerText = "Agent Updated! 🤖";
+    } catch(e) { document.getElementById("agentStatus").innerText = "Update Error"; console.error(e); }
 };
 
 </script>
