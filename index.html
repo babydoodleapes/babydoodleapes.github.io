@@ -4,378 +4,243 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Baby Doodle Apes | Mint</title>
+<!-- UMD version for browser -->
+<script src="https://cdn.jsdelivr.net/npm/ethers@6.8.1/dist/ethers.umd.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Nunito:wght@400;700&display=swap" rel="stylesheet">
 
 <style>
-    :root {
-        --bg-color: #f0f9ff; 
-        --card-bg: rgba(255, 255, 255, 0.9);
-        --text-main: #334155;
-        --text-muted: #64748b;
-        --btn-blue: #93c5fd;
-        --btn-blue-hover: #60a5fa;
-        --btn-pink: #f9a8d4;
-        --btn-pink-hover: #f472b6;
-        --btn-opensea: #2081e2;
-    }
-
-    body {
-        margin: 0;
-        background-color: var(--bg-color);
-        font-family: 'Nunito', sans-serif;
-        color: var(--text-main);
-        overflow-x: hidden;
-    }
-
-    .bubbles {
-        position: fixed;
-        top: 0; left: 0; width: 100%; height: 100%;
-        z-index: -1; overflow: hidden;
-    }
-
-    .bubble {
-        position: absolute; bottom: -100px;
-        width: 40px; height: 40px;
-        background: rgba(255, 255, 255, 0.5);
-        border-radius: 50%; opacity: 0.5;
-        animation: rise 15s infinite ease-in;
-    }
-
-    @keyframes rise {
-        0% { bottom: -100px; transform: translateX(0); }
-        50% { transform: translateX(100px); }
-        100% { bottom: 1080px; transform: translateX(-200px); }
-    }
-
-    h1, h2, h3 { font-family: 'Fredoka', sans-serif; }
-
-    .navbar {
-        display: flex; justify-content: space-between; align-items: center;
-        padding: 20px 50px; backdrop-filter: blur(10px);
-    }
-
-    .navbar h2 { margin: 0; font-size: 28px; color: #f472b6; text-shadow: 2px 2px 0px white; }
-
-    .container {
-        max-width: 1000px; margin: 0 auto; padding: 40px 20px;
-        display: flex; flex-direction: column; align-items: center;
-    }
-
-    .card {
-        background: var(--card-bg); padding: 40px; border-radius: 30px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.05); margin-bottom: 30px;
-        width: 100%; max-width: 550px; text-align: center;
-        border: 6px solid #ffffff; position: relative;
-    }
-
-    .stats {
-        display: flex; justify-content: space-around;
-        background: #f1f5f9; padding: 15px; border-radius: 20px;
-        margin-bottom: 25px; font-weight: 700;
-    }
-
-    button {
-        font-family: 'Fredoka', sans-serif; background: var(--btn-blue);
-        border: none; padding: 14px 30px; border-radius: 50px;
-        color: white; cursor: pointer; font-size: 18px; font-weight: 600;
-        box-shadow: 0 4px 0 var(--btn-blue-hover); transition: all 0.1s ease;
-    }
-
-    button:active { transform: translateY(4px); box-shadow: 0 0 0 transparent; }
-    button.pink { background: var(--btn-pink); box-shadow: 0 4px 0 var(--btn-pink-hover); }
-    button.max-btn { background: #94a3b8; box-shadow: 0 4px 0 #64748b; padding: 10px 20px; font-size: 14px; }
-    button.opensea { background: var(--btn-opensea); box-shadow: 0 4px 0 #1868b7; width: 100%; margin-top: 20px; }
-
-    .quantity-selector {
-        display: inline-flex; align-items: center;
-        background: #f1f5f9; border-radius: 50px; padding: 5px; margin-bottom: 10px;
-    }
-
-    .quantity-selector button { box-shadow: none; background: white; color: black; padding: 10px 20px; }
-
-    #amountInput {
-        font-family: 'Fredoka'; font-size: 24px; width: 80px; 
-        text-align: center; border: none; background: transparent;
-        outline: none; color: var(--text-main);
-    }
-    #amountInput::-webkit-inner-spin-button, 
-    #amountInput::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
-
-    .total-price-box {
-        margin: 15px 0; padding: 10px; background: #fff; border-radius: 15px;
-        border: 2px dashed var(--btn-pink); font-family: 'Fredoka';
-    }
-
-    .agent-input {
-        width: 100%; padding: 15px; margin: 8px 0; border-radius: 15px;
-        border: 2px solid #e2e8f0; box-sizing: border-box;
-    }
-
-    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 15px; margin-top: 20px; }
-    .nft { background: white; padding: 15px; border-radius: 20px; border: 2px solid #f1f5f9; }
-    .status-msg { margin-top: 15px; font-weight: bold; }
-
-    .free-tag {
-        position: absolute; top: -10px; left: -10px;
-        background: #fcd34d; padding: 5px 15px; border-radius: 15px;
-        font-weight: bold; transform: rotate(-5deg);
-    }
+:root {
+    --bg-color: #f0f9ff; 
+    --card-bg: rgba(255, 255, 255, 0.9);
+    --text-main: #334155;
+    --text-muted: #64748b;
+    --btn-blue: #93c5fd;
+    --btn-blue-hover: #60a5fa;
+    --btn-pink: #f9a8d4;
+    --btn-pink-hover: #f472b6;
+    --btn-opensea: #2081e2;
+}
+body {
+    margin:0; font-family:'Nunito',sans-serif; color:var(--text-main); overflow-x:hidden; background:var(--bg-color);
+}
+.bubbles{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;overflow:hidden;}
+.bubble{position:absolute;bottom:-100px;width:40px;height:40px;background:rgba(255,255,255,0.5);border-radius:50%;opacity:0.5;animation:rise 15s infinite ease-in;}
+@keyframes rise{0%{bottom:-100px;transform:translateX(0);}50%{transform:translateX(100px);}100%{bottom:1080px;transform:translateX(-200px);}}
+h1,h2,h3{font-family:'Fredoka',sans-serif;}
+.navbar{display:flex;justify-content:space-between;align-items:center;padding:20px 50px;backdrop-filter:blur(10px);}
+.navbar h2{margin:0;font-size:28px;color:#f472b6;text-shadow:2px 2px 0px white;}
+.container{max-width:1000px;margin:0 auto;padding:40px 20px;display:flex;flex-direction:column;align-items:center;}
+.card{background:var(--card-bg);padding:40px;border-radius:30px;box-shadow:0 10px 30px rgba(0,0,0,0.05);margin-bottom:30px;width:100%;max-width:550px;text-align:center;border:6px solid #fff;position:relative;}
+.stats{display:flex;justify-content:space-around;background:#f1f5f9;padding:15px;border-radius:20px;margin-bottom:25px;font-weight:700;}
+button{font-family:'Fredoka',sans-serif;background:var(--btn-blue);border:none;padding:14px 30px;border-radius:50px;color:white;cursor:pointer;font-size:18px;font-weight:600;box-shadow:0 4px 0 var(--btn-blue-hover);transition:all 0.1s ease;}
+button:active{transform:translateY(4px);box-shadow:0 0 0 transparent;}
+button.pink{background:var(--btn-pink);box-shadow:0 4px 0 var(--btn-pink-hover);}
+button.max-btn{background:#94a3b8;box-shadow:0 4px 0 #64748b;padding:10px 20px;font-size:14px;}
+button.opensea{background:var(--btn-opensea);box-shadow:0 4px 0 #1868b7;width:100%;margin-top:20px;}
+.quantity-selector{display:inline-flex;align-items:center;background:#f1f5f9;border-radius:50px;padding:5px;margin-bottom:10px;}
+.quantity-selector button{box-shadow:none;background:white;color:black;padding:10px 20px;}
+#amountInput{font-family:'Fredoka';font-size:24px;width:80px;text-align:center;border:none;background:transparent;outline:none;color:var(--text-main);}
+#amountInput::-webkit-inner-spin-button,#amountInput::-webkit-outer-spin-button{-webkit-appearance:none;margin:0;}
+.total-price-box{margin:15px 0;padding:10px;background:#fff;border-radius:15px;border:2px dashed var(--btn-pink);font-family:'Fredoka';}
+.agent-input{width:100%;padding:15px;margin:8px 0;border-radius:15px;border:2px solid #e2e8f0;box-sizing:border-box;}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:15px;margin-top:20px;}
+.nft{background:white;padding:15px;border-radius:20px;border:2px solid #f1f5f9;}
+.status-msg{margin-top:15px;font-weight:bold;}
+.free-tag{position:absolute;top:-10px;left:-10px;background:#fcd34d;padding:5px 15px;border-radius:15px;font-weight:bold;transform:rotate(-5deg);}
 </style>
 </head>
-
 <body>
-
 <div class="bubbles" id="bubbleContainer"></div>
 
 <div class="navbar">
-    <h2>🍼 Baby Doodle Apes</h2>
-    <div style="text-align: right">
-        <span id="wallet" style="font-size: 12px; color: var(--text-muted)">Not Connected</span><br>
-        <button id="connectBtn" class="pink" style="padding: 8px 15px; font-size: 14px;">Connect Wallet</button>
-    </div>
+<h2>🍼 Baby Doodle Apes</h2>
+<div style="text-align:right">
+<span id="wallet" style="font-size:12px;color:var(--text-muted)">Not Connected</span><br>
+<button id="connectBtn" class="pink" style="padding:8px 15px;font-size:14px;">Connect Wallet</button>
+</div>
 </div>
 
 <div class="container">
-    <div class="card">
-        <div class="free-tag">FIRST MINT FREE</div>
-        <h2>Public Mint</h2>
-        
-        <div class="stats">
-            <div>Price<br><span id="priceDisplay">0.00011</span> ETH</div>
-            <div>Free Left<br><span id="freeRemaining" style="color: #f472b6;">-</span> / 2000</div>
-            <div>Supply<br><span id="remaining">-</span> / 3332</div>
-        </div>
-
-        <div class="quantity-selector">
-            <button id="minus">-</button>
-            <input type="number" id="amountInput" value="1" min="1">
-            <button id="plus">+</button>
-            <button id="maxBtn" class="max-btn" style="margin-left:10px">MAX (200)</button>
-        </div>
-
-        <div class="total-price-box">
-            Total Cost: <span id="totalCostDisplay">0.00</span> ETH
-            <div id="freeNote" style="font-size: 11px; color: #10b981; margin-top: 4px;">(First one is free!)</div>
-        </div>
-
-        <button id="publicMintBtn" style="width: 100%; margin-bottom: 10px;">Mint Now</button>
-        <button id="freeMintBtn" class="pink" style="width: 100%;">Free Mint (Single)</button>
-        <p id="mintStatus" class="status-msg"></p>
-
-        <button class="opensea" onclick="window.open('https://opensea.io/assets/ethereum/0x53f8b95687c5a4be9089dd63165d0df59f323911', '_blank')">
-            View on OpenSea
-        </button>
-    </div>
-
-    <div class="card">
-        <h2>Your Collection</h2>
-        <div class="grid" id="nftGrid"></div>
-    </div>
-
-    <div class="card">
-        <h2>Agent Settings</h2>
-        <input class="agent-input" id="tokenIdInput" placeholder="Token ID">
-        <input class="agent-input" id="endpointInput" placeholder="Endpoint">
-        <input class="agent-input" id="modelInput" placeholder="Model">
-        <input class="agent-input" id="capabilitiesInput" placeholder="Capabilities">
-        <button id="setAgentBtn" class="pink" style="width: 100%; margin-top: 10px;">Update Identity</button>
-        <p id="agentStatus" class="status-msg"></p>
-    </div>
+<div class="card">
+<div class="free-tag">FIRST MINT FREE</div>
+<h2>Public Mint</h2>
+<div class="stats">
+<div>Price<br><span id="priceDisplay">0.00011</span> ETH</div>
+<div>Free Left<br><span id="freeRemaining" style="color:#f472b6;">-</span> / 2000</div>
+<div>Supply<br><span id="remaining">-</span> / 3332</div>
 </div>
-<script src="https://cdn.jsdelivr.net/npm/ethers@6.8.1/dist/ethers.min.js"></script>
+
+<div class="quantity-selector">
+<button id="minus">-</button>
+<input type="number" id="amountInput" value="1" min="1">
+<button id="plus">+</button>
+<button id="maxBtn" class="max-btn" style="margin-left:10px">MAX (200)</button>
+</div>
+
+<div class="total-price-box">
+Total Cost: <span id="totalCostDisplay">0.00</span> ETH
+<div id="freeNote" style="font-size:11px;color:#10b981;margin-top:4px;">(First one is free!)</div>
+</div>
+
+<button id="publicMintBtn" style="width:100%;margin-bottom:10px;">Mint Now</button>
+<button id="freeMintBtn" class="pink" style="width:100%;">Free Mint (Single)</button>
+<p id="mintStatus" class="status-msg"></p>
+
+<button class="opensea" onclick="window.open('https://opensea.io/assets/ethereum/0x53f8b95687c5a4be9089dd63165d0df59f323911','_blank')">
+View on OpenSea
+</button>
+</div>
+
+<div class="card">
+<h2>Your Collection</h2>
+<div class="grid" id="nftGrid"></div>
+</div>
+
+<div class="card">
+<h2>Agent Settings</h2>
+<input class="agent-input" id="tokenIdInput" placeholder="Token ID">
+<input class="agent-input" id="endpointInput" placeholder="Endpoint">
+<input class="agent-input" id="modelInput" placeholder="Model">
+<input class="agent-input" id="capabilitiesInput" placeholder="Capabilities">
+<button id="setAgentBtn" class="pink" style="width:100%;margin-top:10px;">Update Identity</button>
+<p id="agentStatus" class="status-msg"></p>
+</div>
+</div>
+
 <script>
-// Bubble Generator
+// Bubble generator
 const container = document.getElementById('bubbleContainer');
-for (let i = 0; i < 15; i++) {
-    const b = document.createElement('div');
-    b.className = 'bubble';
-    b.style.left = Math.random() * 100 + '%';
-    b.style.width = b.style.height = (Math.random() * 50 + 20) + 'px';
-    b.style.animationDelay = Math.random() * 10 + 's';
-    b.style.animationDuration = (Math.random() * 10 + 10) + 's';
+for(let i=0;i<15;i++){
+    const b=document.createElement('div');b.className='bubble';
+    b.style.left=Math.random()*100+'%';
+    b.style.width=b.style.height=(Math.random()*50+20)+'px';
+    b.style.animationDelay=Math.random()*10+'s';
+    b.style.animationDuration=(Math.random()*10+10)+'s';
     container.appendChild(b);
 }
 
 // Constants
-const contractAddress = "0x53f8b95687c5a4be9089dd63165d0df59f323911";
-const ETH_CHAIN_ID = "0x1"; // Ethereum Mainnet
-const MINT_PRICE = 0.00011;
+const contractAddress="0x53f8b95687c5a4be9089dd63165d0df59f323911";
+const ETH_CHAIN_ID="0x1";
+const MINT_PRICE=0.00011;
 
-const abi = [
-    "function publicMint(uint256) payable",
-    "function freeMint(uint256)",
-    "function publicPrice() view returns (uint256)",
-    "function totalSupply() view returns (uint256)",
-    "function balanceOf(address) view returns (uint256)",
-    "function tokenOfOwnerByIndex(address,uint256) view returns (uint256)",
-    "function agentIdentity(uint256) view returns (string,string,string)",
-    "function setAgentIdentity(uint256,string,string,string)"
+const abi=[
+"function publicMint(uint256) payable",
+"function freeMint(uint256)",
+"function publicPrice() view returns (uint256)",
+"function totalSupply() view returns (uint256)",
+"function balanceOf(address) view returns (uint256)",
+"function tokenOfOwnerByIndex(address,uint256) view returns (uint256)",
+"function agentIdentity(uint256) view returns (string,string,string)",
+"function setAgentIdentity(uint256,string,string,string)"
 ];
 
-let provider, signer, contract, user;
-let userBalanceNFT = 0;
+let provider,signer,contract,user;
+let userBalanceNFT=0;
 
-// Switch to Ethereum Mainnet
-async function switchNetwork() {
-    try {
-        await window.ethereum.request({
-            method: 'wallet_switchEthereumChain',
-            params: [{ chainId: ETH_CHAIN_ID }],
-        });
-    } catch (err) {
-        if (err.code === 4902) alert("Ethereum Mainnet is not added to your wallet.");
-        else alert("Network switch failed: " + err.message);
+async function switchNetwork(){
+    try{
+        await window.ethereum.request({method:'wallet_switchEthereumChain',params:[{chainId:ETH_CHAIN_ID}]});
+    }catch(err){
+        if(err.code===4902)alert("Ethereum Mainnet is not added to your wallet.");
+        else alert("Network switch failed: "+err.message);
     }
 }
 
-// Connect Wallet
 async function connect(){
-    if(!window.ethereum) return alert("Install MetaMask!");
-
-    provider = new ethers.BrowserProvider(window.ethereum, "any");
-
-    try {
-        await provider.send("eth_requestAccounts", []);
-    } catch(e) {
-        alert("Wallet connection rejected.");
-        return;
-    }
-
-    signer = await provider.getSigner();
-
-    try {
-        user = await signer.getAddress();
-    } catch(e) {
-        alert("Unable to get wallet address: " + e.message);
-        return;
-    }
-
-    const network = await provider.getNetwork();
-    if(network.chainId !== 1n) await switchNetwork();
-
-    contract = new ethers.Contract(contractAddress, abi, signer);
-    document.getElementById("wallet").innerText = user.slice(0,6) + "..." + user.slice(-4);
-    document.getElementById("connectBtn").innerText = "Connected";
-
-    await loadData();
-    await loadNFTs();
-    updateTotal();
+    if(!window.ethereum)return alert("Install MetaMask!");
+    provider=new ethers.BrowserProvider(window.ethereum,"any");
+    try{await provider.send("eth_requestAccounts",[]);}catch(e){alert("Wallet connection rejected.");return;}
+    signer=await provider.getSigner();
+    try{user=await signer.getAddress();}catch(e){alert("Unable to get wallet address: "+e.message);return;}
+    const network=await provider.getNetwork();
+    if(network.chainId!==1n) await switchNetwork();
+    contract=new ethers.Contract(contractAddress,abi,signer);
+    document.getElementById("wallet").innerText=user.slice(0,6)+'...'+user.slice(-4);
+    document.getElementById("connectBtn").innerText="Connected";
+    await loadData();await loadNFTs();updateTotal();
 }
 
-// Load Supply and Free Mint
 async function loadData(){
-    try {
-        const supply = await contract.totalSupply();
-        const current = Number(supply);
-        document.getElementById("remaining").innerText = 3332 - current;
-        const freeLeft = current < 2000 ? 2000 - current : 0;
-        document.getElementById("freeRemaining").innerText = freeLeft;
-
-        if(user) {
-            const bal = await contract.balanceOf(user);
-            userBalanceNFT = Number(bal);
-        }
-    } catch(e) { console.error(e); }
+    try{
+        const supply=await contract.totalSupply();
+        const current=Number(supply);
+        document.getElementById("remaining").innerText=3332-current;
+        const freeLeft=current<2000?2000-current:0;
+        document.getElementById("freeRemaining").innerText=freeLeft;
+        if(user){const bal=await contract.balanceOf(user);userBalanceNFT=Number(bal);}
+    }catch(e){console.error(e);}
 }
 
-// Update total cost
-function updateTotal() {
-    const amountInput = document.getElementById("amountInput");
-    let amount = parseInt(amountInput.value) || 0;
-    if(amount < 1) amount = 1;
-
-    let priceToPay = (userBalanceNFT === 0) ? (amount - 1) * MINT_PRICE : amount * MINT_PRICE;
-    if(priceToPay < 0) priceToPay = 0;
-
-    document.getElementById("totalCostDisplay").innerText = priceToPay.toFixed(5);
-    document.getElementById("freeNote").style.display = (userBalanceNFT === 0) ? "block" : "none";
+function updateTotal(){
+    const amountInput=document.getElementById("amountInput");
+    let amount=parseInt(amountInput.value)||0;if(amount<1)amount=1;
+    let priceToPay=(userBalanceNFT===0)?(amount-1)*MINT_PRICE:amount*MINT_PRICE;
+    if(priceToPay<0)priceToPay=0;
+    document.getElementById("totalCostDisplay").innerText=priceToPay.toFixed(5);
+    document.getElementById("freeNote").style.display=(userBalanceNFT===0)?"block":"none";
 }
 
-// Load NFTs of connected wallet
 async function loadNFTs(){
-    const grid = document.getElementById("nftGrid");
-    grid.innerHTML = "";
-    if(!user) return;
-
-    const balance = await contract.balanceOf(user);
-    userBalanceNFT = Number(balance);
-    if(userBalanceNFT == 0) { grid.innerHTML = "<p>No NFTs found</p>"; return; }
-
-    for(let i=0; i<userBalanceNFT; i++){
-        try {
-            const tid = await contract.tokenOfOwnerByIndex(user, i);
-            const div = document.createElement("div");
-            div.className = "nft";
-            div.innerHTML = `<strong>#${tid}</strong>`;
+    const grid=document.getElementById("nftGrid");
+    grid.innerHTML="";
+    if(!user)return;
+    const balance=await contract.balanceOf(user);
+    userBalanceNFT=Number(balance);
+    if(userBalanceNFT==0){grid.innerHTML="<p>No NFTs found</p>";return;}
+    for(let i=0;i<userBalanceNFT;i++){
+        try{
+            const tid=await contract.tokenOfOwnerByIndex(user,i);
+            const div=document.createElement("div");div.className="nft";div.innerHTML=`<strong>#${tid}</strong>`;
             grid.appendChild(div);
-        } catch(e) { console.error(e); }
+        }catch(e){console.error(e);}
     }
 }
 
-// Public Mint
 async function publicMint(){
-    try {
-        const amount = parseInt(document.getElementById("amountInput").value);
-        if(!amount || amount < 1) return;
-
-        let finalPrice = (userBalanceNFT === 0) ? (amount - 1) * MINT_PRICE : amount * MINT_PRICE;
-        if(finalPrice < 0) finalPrice = 0;
-
-        const valueToSend = ethers.parseEther(finalPrice.toFixed(5).toString());
-        const tx = await contract.publicMint(amount, {value: valueToSend});
-        document.getElementById("mintStatus").innerText = "Please confirm transaction...";
+    try{
+        const amount=parseInt(document.getElementById("amountInput").value);
+        if(!amount||amount<1)return;
+        let finalPrice=(userBalanceNFT===0)?(amount-1)*MINT_PRICE:amount*MINT_PRICE;
+        if(finalPrice<0)finalPrice=0;
+        const valueToSend=ethers.parseEther(finalPrice.toFixed(5).toString());
+        const tx=await contract.publicMint(amount,{value:valueToSend});
+        document.getElementById("mintStatus").innerText="Please confirm transaction...";
         await tx.wait();
-        document.getElementById("mintStatus").innerText = "Mint Success! 🎉";
-        await loadData(); await loadNFTs(); updateTotal();
-    } catch(e) { document.getElementById("mintStatus").innerText = "Transaction failed."; console.error(e); }
+        document.getElementById("mintStatus").innerText="Mint Success! 🎉";
+        await loadData();await loadNFTs();updateTotal();
+    }catch(e){document.getElementById("mintStatus").innerText="Transaction failed.";console.error(e);}
 }
 
-// Free Mint
 async function freeMint(){
-    try {
-        const tx = await contract.freeMint(1);
-        document.getElementById("mintStatus").innerText = "Claiming free mint...";
+    try{
+        const tx=await contract.freeMint(1);
+        document.getElementById("mintStatus").innerText="Claiming free mint...";
         await tx.wait();
-        document.getElementById("mintStatus").innerText = "Free Mint Success! 🎉";
-        await loadData(); await loadNFTs(); updateTotal();
-    } catch(e) { document.getElementById("mintStatus").innerText = "Not eligible."; console.error(e); }
+        document.getElementById("mintStatus").innerText="Free Mint Success! 🎉";
+        await loadData();await loadNFTs();updateTotal();
+    }catch(e){document.getElementById("mintStatus").innerText="Not eligible.";console.error(e);}
 }
 
-// Event listeners
-document.getElementById("amountInput").oninput = updateTotal;
-document.getElementById("connectBtn").onclick = connect;
-document.getElementById("publicMintBtn").onclick = publicMint;
-document.getElementById("freeMintBtn").onclick = freeMint;
-
-document.getElementById("plus").onclick = () => { 
-    const input = document.getElementById("amountInput");
-    input.value = parseInt(input.value) + 1;
-    updateTotal(); 
-}
-document.getElementById("minus").onclick = () => { 
-    const input = document.getElementById("amountInput");
-    if(parseInt(input.value) > 1) { input.value = parseInt(input.value) - 1; updateTotal(); }
-}
-document.getElementById("maxBtn").onclick = () => { 
-    document.getElementById("amountInput").value = 200; 
-    updateTotal(); 
-}
-
-// Agent Settings
-document.getElementById("setAgentBtn").onclick = async () => {
-    try {
-        const tx = await contract.setAgentIdentity(
+document.getElementById("amountInput").oninput=updateTotal;
+document.getElementById("connectBtn").onclick=connect;
+document.getElementById("publicMintBtn").onclick=publicMint;
+document.getElementById("freeMintBtn").onclick=freeMint;
+document.getElementById("plus").onclick=()=>{const input=document.getElementById("amountInput");input.value=parseInt(input.value)+1;updateTotal();}
+document.getElementById("minus").onclick=()=>{const input=document.getElementById("amountInput");if(parseInt(input.value)>1){input.value=parseInt(input.value)-1;updateTotal();}}
+document.getElementById("maxBtn").onclick=()=>{document.getElementById("amountInput").value=200;updateTotal();}
+document.getElementById("setAgentBtn").onclick=async()=>{
+    try{
+        const tx=await contract.setAgentIdentity(
             document.getElementById("tokenIdInput").value,
             document.getElementById("endpointInput").value,
             document.getElementById("modelInput").value,
             document.getElementById("capabilitiesInput").value
         );
         await tx.wait();
-        document.getElementById("agentStatus").innerText = "Agent Updated! 🤖";
-    } catch(e) { document.getElementById("agentStatus").innerText = "Update Error"; console.error(e); }
+        document.getElementById("agentStatus").innerText="Agent Updated! 🤖";
+    }catch(e){document.getElementById("agentStatus").innerText="Update Error";console.error(e);}
 };
-
 </script>
 </body>
 </html>
-
